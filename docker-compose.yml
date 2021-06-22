@@ -52,6 +52,10 @@ services:
             - DOCKER_INFLUXDB_INIT_ORG=${INFLUX_ORG}
             - DOCKER_INFLUXDB_INIT_BUCKET=mqtt
             - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 5s
         depends_on:
             - influxd
         # override entrypoint to configure InfluxDB (and install tasks?) -- container shuts down after this
