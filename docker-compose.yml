@@ -1,0 +1,32 @@
+version: '3'
+services:
+    left_client:
+        image: telegraf:1.18
+        container_name: left_client
+        volumes:
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/telegraf/left.conf:/etc/telegraf/telegraf.conf"
+        depends_on:
+            - broker
+
+    right_client:
+        image: telegraf:1.18
+        container_name: right_client
+        volumes:
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/telegraf/right.conf:/etc/telegraf/telegraf.conf"
+        environment:
+            - INFLUX_HOST=${INFLUX_HOST}
+            - INFLUX_ORG=${INFLUX_ORG}
+            - INFLUX_TOKEN=${INFLUX_TOKEN}
+        depends_on: 
+            - broker
+            - left_client
+
+    broker:
+        # image: eclipse-mosquitto:latest
+        image: hivemq/hivemq4
+        container_name: broker
+        ports:
+            - "1883:1883"
+            - "8080:8080"
+
+
