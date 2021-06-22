@@ -53,7 +53,8 @@ services:
             - DOCKER_INFLUXDB_INIT_BUCKET=mqtt
             - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
         depends_on:
-            - influxdb
+            - influxd
+        # override entrypoint to configure InfluxDB (and install tasks?) -- container shuts down after this
         entrypoint: influx setup --bucket mqtt -t ${INFLUX_TOKEN} -o ${INFLUX_ORG} --username=${INFLUX_USERNAME} --password=${INFLUX_PASSWORD} --host=http://influxd:8086 -f --skip-verify
 
 
