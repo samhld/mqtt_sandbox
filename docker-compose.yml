@@ -28,5 +28,32 @@ services:
         ports:
             - "1883:1883"
             - "8080:8080"
+    
+    influxdb:
+        image: influxdb:2.0.7
+        container_name: influxd
+        volumes:
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/influxdb/data:/var/lib/.influxdbv2"
+        environment:
+            - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUX_USERNAME}
+            - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_PASSWORD}
+            - DOCKER_INFLUXDB_INIT_ORG=${INFLUX_ORG}
+            - DOCKER_INFLUXDB_INIT_BUCKET=mqtt
+            - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
+        ports:
+            - "8086:8086"
+
+    influx_cli:
+        image: influxdb:2.0.7
+        container_name: influx_cli
+        environment:
+            - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUX_USERNAME}
+            - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_PASSWORD}
+            - DOCKER_INFLUXDB_INIT_ORG=${INFLUX_ORG}
+            - DOCKER_INFLUXDB_INIT_BUCKET=mqtt
+            - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
+        depends_on:
+            - influxdb
+        entrypoint: influx setup --bucket mqtt -t ${INFLUX_TOKEN} -o ${INFLUX_ORG} --username=${INFLUX_USERNAME} --password=${INFLUX_PASSWORD} --host=http://influxd:8086 -f --skip-verify
 
 
