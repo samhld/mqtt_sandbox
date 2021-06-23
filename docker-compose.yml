@@ -4,7 +4,7 @@ services:
         image: telegraf:1.18
         container_name: left_client
         volumes:
-            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/telegraf/left.conf:/etc/telegraf/telegraf.conf"
+            - "${MQTT_DEMO_PATH}/telegraf/left.conf:/etc/telegraf/telegraf.conf"
         depends_on:
             - broker
 
@@ -12,7 +12,7 @@ services:
         image: telegraf:1.18
         container_name: right_client
         volumes:
-            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/telegraf/right.conf:/etc/telegraf/telegraf.conf"
+            - "${MQTT_DEMO_PATH}/telegraf/right.conf:/etc/telegraf/telegraf.conf"
         environment:
             - INFLUX_HOST=${INFLUX_HOST}
             - INFLUX_ORG=${INFLUX_ORG}
@@ -32,7 +32,7 @@ services:
         image: influxdb:2.0.7
         container_name: influxd
         volumes:
-            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/influxdb/data:/var/lib/.influxdbv2"
+            - "${MQTT_DEMO_PATH}/influxdb/data:/var/lib/.influxdbv2"
         environment:
             - DOCKER_INFLUXDB_INIT_USERNAME=${INFLUX_USERNAME}
             - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUX_PASSWORD}
@@ -58,8 +58,9 @@ services:
         depends_on:
             - influxd
         volumes:
-            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cpu_average_5m.flux:/cpu_average_5m.flux"
-            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cli_entrypoint.sh:/cli_entrypoint.sh"
+            - "${MQTT_DEMO_PATH}/cpu_average_5m.flux:/cpu_average_5m.flux"
+            - "${MQTT_DEMO_PATH}/cpu_average_5m.flux:/mem_average_5m.flux"
+            - "${MQTT_DEMO_PATH}/cli_entrypoint.sh:/cli_entrypoint.sh"
         entrypoint: /cli_entrypoint.sh
 
 
