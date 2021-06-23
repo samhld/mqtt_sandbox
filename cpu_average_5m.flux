@@ -21,7 +21,7 @@ device_name = string(v: record._value)
 topic = strings.joinStr(arr: ["/processed", device_name, "cpu", "average"], v: "/")
  
 from(bucket: "mqtt")
-    |> range(start: -5m)
+    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
     |> filter(fn: (r) => r["_measurement"] == "cpu")
     |> filter(fn: (r) => r["_field"] == "usage_user")
     |> filter(fn: (r) => r["cpu"] == "cpu-total")
