@@ -1,8 +1,6 @@
 # mqtt_sandbox
 
-## What's here
-
-// architecture image goes here>
+![Architecture](imgs/architecture.png)
 
 ## Usage
 Set environment variables Docker host machine:
