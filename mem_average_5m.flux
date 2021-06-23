@@ -21,7 +21,7 @@ device_name = string(v: record._value)
 topic = strings.joinStr(arr: ["/processed", device_name, "mem", "average"], v: "/")
  
 from(bucket: "mqtt")
-    |> range(start: v.timeRangeStart, stop: timeRangeStop)
+    |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
     |> filter(fn: (r) => r["_measurement"] == "mem")
     |> filter(fn: (r) => r["_field"] == "used")
     |> mean()

@@ -59,7 +59,7 @@ services:
             - influxd
         volumes:
             - "${MQTT_DEMO_PATH}/cpu_average_5m.flux:/cpu_average_5m.flux"
-            - "${MQTT_DEMO_PATH}/cpu_average_5m.flux:/mem_average_5m.flux"
+            - "${MQTT_DEMO_PATH}/mem_average_5m.flux:/mem_average_5m.flux"
             - "${MQTT_DEMO_PATH}/cli_entrypoint.sh:/cli_entrypoint.sh"
         entrypoint: /cli_entrypoint.sh
 
