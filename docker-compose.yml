@@ -59,6 +59,7 @@ services:
             - influxd
         volumes:
             - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cpu_average_5m.flux:/cpu_average_5m.flux"
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/mem_average_5m.flux:/mem_average_5m.flux"
             - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cli_entrypoint.sh:/cli_entrypoint.sh"
         entrypoint: /cli_entrypoint.sh
 
