@@ -22,7 +22,6 @@ services:
             - left_client
 
     broker:
-        # image: eclipse-mosquitto:latest
         image: hivemq/hivemq4
         container_name: broker
         ports:
@@ -52,9 +51,17 @@ services:
             - DOCKER_INFLUXDB_INIT_ORG=${INFLUX_ORG}
             - DOCKER_INFLUXDB_INIT_BUCKET=mqtt
             - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=${INFLUX_TOKEN}
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 5s
         depends_on:
             - influxd
-        # override entrypoint to configure InfluxDB (and install tasks?) -- container shuts down after this
-        entrypoint: influx setup --bucket mqtt -t ${INFLUX_TOKEN} -o ${INFLUX_ORG} --username=${INFLUX_USERNAME} --password=${INFLUX_PASSWORD} --host=http://influxd:8086 -f --skip-verify
+        volumes:
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cpu_average_5m.flux:/cpu_average_5m.flux"
+            - "/Users/samdillard/demos/iot/mqtt/mqtt-demo/cli_entrypoint.sh:/cli_entrypoint.sh"
+        entrypoint: /cli_entrypoint.sh
+
+
 
 
