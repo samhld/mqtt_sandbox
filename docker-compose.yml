@@ -1,10 +1,18 @@
 version: '3'
 services:
-    left_client:
+    left_client1:
         image: telegraf:1.18
-        container_name: left_client
+        container_name: left_client1
         volumes:
-            - "${MQTT_DEMO_PATH}/telegraf/left.conf:/etc/telegraf/telegraf.conf"
+            - "${MQTT_DEMO_PATH}/telegraf/left1.conf:/etc/telegraf/telegraf.conf"
+        depends_on:
+            - broker
+
+    left_client2:
+        image: telegraf:1.18
+        container_name: left_client2
+        volumes:
+            - "${MQTT_DEMO_PATH}/telegraf/left2.conf:/etc/telegraf/telegraf.conf"
         depends_on:
             - broker
 
@@ -28,7 +36,7 @@ services:
             - "1883:1883"
             - "8080:8080"
     
-    influxdb:
+    influxd:
         image: influxdb:2.0.7
         container_name: influxd
         volumes:
