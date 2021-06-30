@@ -71,6 +71,19 @@ services:
             - "${MQTT_DEMO_PATH}/cli_entrypoint.sh:/cli_entrypoint.sh"
         entrypoint: /cli_entrypoint.sh
 
+    nodered:
+        image: nodered/node-red
+        container_name: nodered
+        depends_on: 
+            - influxd
+            - broker
+        ports:
+            - "1880:1880"
+        volumes:
+            - "${MQTT_DEMO_PATH}/node-red.json:/data/mqtt-demo.json"
+            - "${HOME}/.node-red:/data"
+
+
 
 
 

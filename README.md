@@ -34,7 +34,11 @@ From there you can take your browser to the following ports on `localhost`:
 - :8080
     - This is the HiveMQ UI
     - Log in with their defaults (username=`admin`, password=`hivemq`)
-- :1880 (_not yet implemented as part of the `docker-compose.yml` file_)
+- :1880
     - This is Node-Red
-    - This is an alternative architecture that you can use to play around with
+    - There is a Flow aready created for you. However, you'll need to "load" it grab your InfluxDB Token.  To load it:
+        - copy the `node-red.json` text in the root of the repo
+        - navigate in the UI to the "hamburger" in the upper-right and click "Import"
+        - with "Clipboard" selected, paste in the JSON, make sure "current flow" is selected at the bottom, and "Import"
+    - From here, double click the "_influxdb destination_" node, click the pencil icon to the right of "Server" to edit its settings and enter your Token into the "Token" field, and Update, and Done.
 
