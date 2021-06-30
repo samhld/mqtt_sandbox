@@ -36,6 +36,7 @@ From there you can take your browser to the following ports on `localhost`:
     - Log in with their defaults (username=`admin`, password=`hivemq`)
 - :1880
     - This is Node-Red
+    ![Node-Red Flow](imgs/node-red-flow.png)
     - There is a Flow aready created for you. However, you'll need to "load" it grab your InfluxDB Token.  To load it:
         - copy the `node-red.json` text in the root of the repo
         - navigate in the UI to the "hamburger" in the upper-right and click "Import"
