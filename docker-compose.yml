@@ -83,7 +83,18 @@ services:
             - "${MQTT_DEMO_PATH}/node-red.json:/data/mqtt-demo.json"
             - "${HOME}/.node-red:/data"
 
-
-
-
+    api:
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        image: python-docker
+        container_name: api
+        ports:
+            - "8000:8000"
+        environment:
+            - INFLUX_HOST=${DOCKER_INFLUX_HOST}
+            - INFLUX_TOKEN=${INFLUX_TOKEN}
+            - INFLUX_BUCKET=${INFLUX_BUCKET}
+            - INFLUX_ORG=${INFLUX_ORG}
+            - FLUX_QUERIES_PATH=/mqtt_api/flux_queries
 
