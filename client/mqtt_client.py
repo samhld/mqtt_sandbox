@@ -15,7 +15,7 @@ def on_publish(client, userdata, mid):
 def on_log(client, userdata, level, buf):
     print(f"{buf} retain={client._will_retain}")
     
-broker = "host.docker.internal"
+broker = "localhost"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))
 client_name = f"py_mqtt_{rand_string}"

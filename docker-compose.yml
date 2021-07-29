@@ -98,11 +98,10 @@ services:
             - INFLUX_ORG=${INFLUX_ORG}
             - FLUX_QUERIES_PATH=/mqtt_api/flux_queries
 
-    # py_publisher:
-    #     image: python-mqtt-client
-    #     deploy:
-    #         mode: replicated
-    #         replicas: 3
-    #     depends_on: 
-    #         - broker
-    #     entrypoint: "python3 /mqtt_client/mqtt_client.py"
+    py_publisher:
+        image: python-mqtt-client
+        deploy:
+            mode: replicated
+            replicas: 3
+        depends_on: 
+            - broker
