@@ -1,20 +1,5 @@
 version: '3'
 services:
-    left_client1:
-        image: telegraf:1.18
-        container_name: left_client1
-        volumes:
-            - "${MQTT_DEMO_PATH}/telegraf/left1.conf:/etc/telegraf/telegraf.conf"
-        depends_on:
-            - broker
-
-    left_client2:
-        image: telegraf:1.18
-        container_name: left_client2
-        volumes:
-            - "${MQTT_DEMO_PATH}/telegraf/left2.conf:/etc/telegraf/telegraf.conf"
-        depends_on:
-            - broker
 
     right_client:
         image: telegraf:1.18
@@ -27,7 +12,6 @@ services:
             - INFLUX_TOKEN=${INFLUX_TOKEN}
         depends_on: 
             - broker
-            - left_client
 
     broker:
         image: hivemq/hivemq4
