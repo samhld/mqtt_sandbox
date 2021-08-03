@@ -28,14 +28,13 @@ def on_subscribe(client, userdata, mid, granted_qos):
     print(f"SUBSCRIBE: {mid} {granted_qos}")
 
 def on_message(client, userdata, msg):
-    print(f"Topic: {msg.topic}\n\t\tPayload: {msg.payload.decode('utf-8')}\n\t\tMessage type: {msg.payload.decode('utf-8')}")
+    print(f"Incoming message:\n\tTopic: {msg.topic}\n\tPayload: {msg.payload.decode('utf-8')}")
     
 broker = "localhost"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))
 client_name = f"py_mqtt_{rand_string}"
 client = mqtt.Client(client_name)
-# client.will_set("test", qos=1, retain=True)
 client.on_connect = on_connect
 # client.on_log = on_log
 client.on_publish = on_publish
@@ -64,12 +63,4 @@ except Exception as e:
     client.disconnect()
     client.loop_stop()
 
-
-# while True:
-#     temp = random.randint(0,100)
-#     print(temp)
-#     timestamp = round(datetime.datetime.now().timestamp()*(10**9))
-#     point = f"temp value={temp} {timestamp}"
-#     (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
-#     time.sleep(5)
 
