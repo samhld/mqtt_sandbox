@@ -8,26 +8,37 @@ letters = string.ascii_lowercase
 
 def on_connect(client, userdata, flags, rc):
     print(f"CONNACK received with code: {rc}")
+    print("SUBSCRIBING to Topic: 'things/temp/average'")
+    client.subscribe("things/temp/average", qos=1)
 
 def on_disconnect(client, userdata, rc):
     print(f"DISCONNECT code: {rc}")
+    client.loop_stop()
 
 def on_publish(client, userdata, mid):
     print(f"mid: {mid}")
 
 def on_log(client, userdata, level, buf):
     print(f"{buf} retain={client._will_retain}")
+
+def on_subscribe(client, userdata, mid, granted_qos):
+    print(f"SUBSCRIBE: {mid} {granted_qos}")
+
+def on_message(client, userdata, msg):
+    print(f"Topic: {msg.topic}\n\t\tPayload: {msg.payload.decode('utf-8')}\n\t\tMessage type: {msg.payload.decode('utf-8')}")
     
-broker = "broker"
+broker = "localhost"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))
 client_name = f"py_mqtt_{rand_string}"
 client = mqtt.Client(client_name)
 # client.will_set("test", qos=1, retain=True)
 client.on_connect = on_connect
-client.on_log = on_log
+# client.on_log = on_log
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
+client.on_subscribe = on_subscribe
+client.on_message = on_message
 client.connect(broker, port, keepalive=10)
 client.loop_start()
 
@@ -37,6 +48,5 @@ while True:
     timestamp = round(datetime.datetime.now().timestamp()*(10**9))
     point = f"temp value={temp} {timestamp}"
     (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
-    print(f"mid: {mid} rc: {rc}")
-    time.sleep(2)
+    time.sleep(5)
 
