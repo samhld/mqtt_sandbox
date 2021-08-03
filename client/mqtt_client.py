@@ -3,6 +3,9 @@ import time
 import datetime
 import random
 import string
+import logging
+
+logger = logging.getLogger(__name__)
 
 letters = string.ascii_lowercase
 
@@ -42,11 +45,31 @@ client.on_message = on_message
 client.connect(broker, port, keepalive=10)
 client.loop_start()
 
-while True:
-    temp = random.randint(0,100)
-    print(temp)
-    timestamp = round(datetime.datetime.now().timestamp()*(10**9))
-    point = f"temp value={temp} {timestamp}"
-    (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
-    time.sleep(5)
+try:
+    loop = True
+    while loop:
+        try:
+            temp = random.randint(0,100)
+            print(temp)
+            timestamp = round(datetime.datetime.now().timestamp()*(10**9))
+            point = f"temp value={temp} {timestamp}"
+            (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
+            time.sleep(5)
+        except:
+            logger.error("error during publishing")
+            loop = False
+    
+except Exception as e:
+    logger.error(f"Error:{e}")
+    client.disconnect()
+    client.loop_stop()
+
+
+# while True:
+#     temp = random.randint(0,100)
+#     print(temp)
+#     timestamp = round(datetime.datetime.now().timestamp()*(10**9))
+#     point = f"temp value={temp} {timestamp}"
+#     (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
+#     time.sleep(5)
 
