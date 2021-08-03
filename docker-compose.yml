@@ -19,6 +19,11 @@ services:
         ports:
             - "1883:1883"
             - "8080:8080"
+        # healthcheck:
+        #     test: ["CMD", "curl", "-f", "http://localhost:1883", "||", "exit", "52"]
+        #     interval: 5s
+        #     timeout: 5s
+        #     retries: 5
     
     influxd:
         image: influxdb:2.0.7
@@ -50,42 +55,53 @@ services:
         depends_on:
             - influxd
         volumes:
-            - "${MQTT_DEMO_PATH}/cpu_average_5m.flux:/cpu_average_5m.flux"
-            - "${MQTT_DEMO_PATH}/mem_average_5m.flux:/mem_average_5m.flux"
+            - "${MQTT_DEMO_PATH}/average_temp_5m.flux:/average_temp_5m.flux"
             - "${MQTT_DEMO_PATH}/cli_entrypoint.sh:/cli_entrypoint.sh"
         entrypoint: /cli_entrypoint.sh
 
-    nodered:
-        image: nodered/node-red
-        container_name: nodered
-        depends_on: 
-            - influxd
-            - broker
-        ports:
-            - "1880:1880"
-        volumes:
-            - "${MQTT_DEMO_PATH}/node-red.json:/data/mqtt-demo.json"
-            - "${HOME}/.node-red:/data"
+    # nodered:
+    #     image: nodered/node-red
+    #     container_name: nodered
+    #     depends_on: 
+    #         - influxd
+    #         - broker
+    #     ports:
+    #         - "1880:1880"
+    #     volumes:
+    #         - "${MQTT_DEMO_PATH}/node-red.json:/data/mqtt-demo.json"
+    #         - "${HOME}/.node-red:/data"
 
-    api:
-        # build:
-        #     context: .
-        #     dockerfile: Dockerfile
-        image: python-docker
-        container_name: api
-        ports:
-            - "8000:8000"
-        environment:
-            - INFLUX_HOST=${DOCKER_INFLUX_HOST}
-            - INFLUX_TOKEN=${INFLUX_TOKEN}
-            - INFLUX_BUCKET=${INFLUX_BUCKET}
-            - INFLUX_ORG=${INFLUX_ORG}
-            - FLUX_QUERIES_PATH=/mqtt_api/flux_queries
+    # api:
+    #     build:
+    #         context: ./client
+    #         dockerfile: Dockerfile
+    #     # image: python-docker
+    #     container_name: api
+    #     ports:
+    #         - "8000:8000"
+    #     environment:
+    #         - INFLUX_HOST=${DOCKER_INFLUX_HOST}
+    #         - INFLUX_TOKEN=${INFLUX_TOKEN}
+    #         - INFLUX_BUCKET=${INFLUX_BUCKET}
+    #         - INFLUX_ORG=${INFLUX_ORG}
+    #         - FLUX_QUERIES_PATH=/mqtt_api/flux_queries
 
     py_publisher:
-        image: python-mqtt-client
+        build:
+            context: ./client
+            dockerfile: Dockerfile
+        # image: python-test
+        stdin_open: true
+        tty: true
         deploy:
             mode: replicated
             replicas: 3
+            # restart_policy:
+            #     condition: on-failure
+            #     delay: 2s
         depends_on: 
             - broker
+            # broker:
+            #     condition: service_healthy
+
+        # entrypoint: "python3 mqtt_client.py"

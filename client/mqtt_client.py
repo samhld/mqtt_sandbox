@@ -16,21 +16,20 @@ def on_connect(client, userdata, flags, rc):
 
 def on_disconnect(client, userdata, rc):
     print(f"DISCONNECT code: {rc}")
-    client.loop_stop()
 
 def on_publish(client, userdata, mid):
-    print(f"mid: {mid}")
+    print(f"PUBLISH mid: {mid}, userdata: {userdata}")
 
 def on_log(client, userdata, level, buf):
     print(f"{buf} retain={client._will_retain}")
 
 def on_subscribe(client, userdata, mid, granted_qos):
-    print(f"SUBSCRIBE: {mid} {granted_qos}")
+    print(f"SUBSCRIBE: mid: {mid} granted qos: {granted_qos}")
 
 def on_message(client, userdata, msg):
     print(f"Incoming message:\n\tTopic: {msg.topic}\n\tPayload: {msg.payload.decode('utf-8')}")
     
-broker = "localhost"
+broker = "host.docker.internal"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))
 client_name = f"py_mqtt_{rand_string}"
@@ -49,7 +48,6 @@ try:
     while loop:
         try:
             temp = random.randint(0,100)
-            print(temp)
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
             point = f"temp value={temp} {timestamp}"
             (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
