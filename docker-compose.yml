@@ -5,7 +5,7 @@ services:
         image: telegraf:1.18
         container_name: right_client
         volumes:
-            - "${MQTT_DEMO_PATH}/telegraf/right.conf:/etc/telegraf/telegraf.conf"
+            - "${MQTT_DEMO_PATH}/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf"
         environment:
             - INFLUX_HOST=${INFLUX_HOST}
             - INFLUX_ORG=${INFLUX_ORG}
@@ -95,7 +95,7 @@ services:
         tty: true
         deploy:
             mode: replicated
-            replicas: 3
+            replicas: 10
             # restart_policy:
             #     condition: on-failure
             #     delay: 2s
