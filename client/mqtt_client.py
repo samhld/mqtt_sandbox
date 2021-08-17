@@ -18,7 +18,7 @@ def on_disconnect(client, userdata, rc):
     print(f"DISCONNECT code: {rc}")
 
 def on_publish(client, userdata, mid):
-    print(f"PUBLISH mid: {mid}, userdata: {userdata}")
+    print(f"PUBLISH mid: {mid}")
 
 def on_log(client, userdata, level, buf):
     print(f"{buf} retain={client._will_retain}")
