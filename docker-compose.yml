@@ -105,3 +105,12 @@ services:
             #     condition: service_healthy
 
         # entrypoint: "python3 mqtt_client.py"
+    # grafana:
+    #     image: grafana/grafana:latest
+    #     ports:
+    #         - "3000:3000"
+    #     environment:
+    #         - 
+    #     depends_on:
+    #         - broker
+    #         - influxd
