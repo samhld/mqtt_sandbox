@@ -101,7 +101,14 @@ services:
             #     delay: 2s
         depends_on: 
             - broker
-            # broker:
-            #     condition: service_healthy
 
-        # entrypoint: "python3 mqtt_client.py"
+    grafana:
+        container_name: grafana
+        build: ./grafana
+        ports:
+            - "3000:3000"
+        depends_on:
+            - broker
+            - influxd
+        volumes:
+            - "${MQTT_DEMO_PATH}/grafana/grafana.ini:/etc/grafana/grafana.ini"
