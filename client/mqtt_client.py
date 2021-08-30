@@ -4,6 +4,7 @@ import datetime
 import random
 import string
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -49,8 +50,14 @@ try:
         try:
             temp = random.randint(0,100)
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
-            point = f"temp value={temp} {timestamp}"
-            (rc, mid) = client.publish(f"/things/{client_name}/temp", point, 2, retain=True)
+            point_json = json.dumps(f"{{'value': {temp}}}")
+            point_lp = f"temp value={temp} {timestamp}"
+            (rc_json, mid_json) = client.publish(f"/json/things/{client_name}/temp", point_json, 2, retain=True)
+            if rc_json == 0:
+                print(f"mid_json: {mid_json}, temp: {temp}")
+            (rc_lp, mid_lp) = client.publish(f"/things/{client_name}/temp", point_lp, 2, retain=True)
+            if rc_lp == 0:
+                print(f"mid_lp: {mid_lp}, temp: {temp}")
             time.sleep(5)
         except:
             logger.error("error during publishing")
