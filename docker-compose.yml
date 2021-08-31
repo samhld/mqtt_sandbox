@@ -2,16 +2,21 @@ version: '3'
 services:
 
     right_client:
-        image: telegraf:1.18
+        image: telegraf:1.19.3
         container_name: right_client
         volumes:
             - "${MQTT_DEMO_PATH}/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf"
+            - "${MQTT_DEMO_PATH}/telegraf/topic_parse.star:/etc/telegraf/topic_parse.star"
         environment:
             - INFLUX_HOST=${INFLUX_HOST}
             - INFLUX_ORG=${INFLUX_ORG}
             - INFLUX_TOKEN=${INFLUX_TOKEN}
         depends_on: 
             - broker
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 5s
 
     broker:
         image: hivemq/hivemq4
