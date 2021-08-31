@@ -50,9 +50,9 @@ try:
         try:
             temp = random.randint(0,100)
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
-            point_json = json.dumps(f"{{'value': {temp}}}")
+            point_json = json.dumps({"value": temp})
             point_lp = f"temp value={temp} {timestamp}"
-            (rc_json, mid_json) = client.publish(f"/json/things/{client_name}/temp", point_json, 2, retain=True)
+            (rc_json, mid_json) = client.publish(f"json/things/{client_name}/temp", point_json, 2, retain=True)
             if rc_json == 0:
                 print(f"mid_json: {mid_json}, temp: {temp}")
             (rc_lp, mid_lp) = client.publish(f"/things/{client_name}/temp", point_lp, 2, retain=True)
