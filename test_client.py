@@ -6,9 +6,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+parser = argparse.ArgumentParser(description="Provide a topic to subscribe to")
+parser.add_argument("topic", type=str, help="a topic to subscribe to")
+args = parser.parse_args()
+
+topic = args.topic
+
 def on_connect(client, userdata, flags, rc):
     print(f"CONNACK received with code: {rc}")
-    print("SUBSCRIBING to Topic: 'things/temp/average'")
+    print(f"SUBSCRIBING to Topic: {topic}")
 
 def on_disconnect(client, userdata, rc):
     print(f"DISCONNECT code: {rc}")
@@ -34,18 +40,26 @@ client.on_disconnect = on_disconnect
 client.on_subscribe = on_subscribe
 client.on_message = on_message
 client.connect(broker, port, keepalive=10)
-client.loop_start()
+# client.loop_start()
 
 try:
-    loop = True
-    while loop:
-        try:
-            client.subscribe("json/things/+/temp")
-        except:
-            logger.error("error during subscription")
-            loop = False
-    
+    client.subscribe(topic)
 except Exception as e:
     logger.error(f"Error:{e}")
     client.disconnect()
-    client.loop_stop()
+
+client.loop_forever()
+
+# try:
+#     loop = True
+#     while loop:
+#         try:
+#             client.subscribe(topic)
+#         except:
+#             logger.error("error during subscription")
+#             loop = False
+    
+# except Exception as e:
+#     logger.error(f"Error:{e}")
+#     client.disconnect()
+#     client.loop_stop()
