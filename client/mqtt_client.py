@@ -5,10 +5,19 @@ import random
 import string
 import logging
 import json
+import argparse
 
 logger = logging.getLogger(__name__)
 
 letters = string.ascii_lowercase
+
+parser = argparse.ArgumentParser(description="Configure client")
+parser.add_argument("--interval", type=float, default=5, help="Number of seconds between PUBs (float) -- accepts sub-second")
+parser.add_argument("--format", type=str, default="value", help="Can be any of: 'value', 'json-value', 'json', 'lp'")
+args = parser.parse_args()
+
+interval = args.interval
+format = args.format
 
 def on_connect(client, userdata, flags, rc):
     print(f"CONNACK received with code: {rc}")
@@ -31,12 +40,12 @@ def on_message(client, userdata, msg):
     print(f"Incoming message:\n\tTopic: {msg.topic}\n\tPayload: {msg.payload.decode('utf-8')}")
     
 broker = "host.docker.internal"
+# broker = "localhost"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))
 client_name = f"py_mqtt_{rand_string}"
 client = mqtt.Client(client_name)
 client.on_connect = on_connect
-# client.on_log = on_log
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
 client.on_subscribe = on_subscribe
@@ -50,15 +59,30 @@ try:
         try:
             temp = random.randint(0,100)
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
-            point_json = json.dumps({"value": temp})
-            point_lp = f"temp value={temp} {timestamp}"
-            (rc_json, mid_json) = client.publish(f"json/things/{client_name}/temp", point_json, 2, retain=True)
-            if rc_json == 0:
-                print(f"mid_json: {mid_json}, temp: {temp}")
-            (rc_lp, mid_lp) = client.publish(f"/things/{client_name}/temp", point_lp, 2, retain=True)
-            if rc_lp == 0:
-                print(f"mid_lp: {mid_lp}, temp: {temp}")
-            time.sleep(5)
+            if format == "value":
+                point = temp
+                topic = f"things/{client_name}/temp"
+                print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                (rc, mid) = client.publish(topic, point, 2, retain=True)
+            if format == "json-value":
+                point = json.dumps({"value": temp})
+                topic = f"json/things/{client_name}/temp"
+                print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                (rc, mid) = client.publish(topic, point, 2, retain=True)
+            if format == "json":
+                di = {"device_id": client_name,
+                       "group": "things",
+                       "temp": temp}
+                point = json.dumps(di)
+                topic = "json/data"
+                print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                (rc, mid) = client.publish(topic, point, 2, retain=True)
+            if format == "lp":
+                point = f"temp value={temp}"
+                topic = f"lp/things/{client_name}/temp"
+                print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                (rc, mid) = client.publish(topic, point, 2, retain=True)
+            time.sleep(interval)
         except:
             logger.error("error during publishing")
             loop = False
