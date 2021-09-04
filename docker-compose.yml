@@ -106,6 +106,7 @@ services:
             #     delay: 2s
         depends_on: 
             - broker
+        command: ["/mqtt_client.py", "--interval", ".1", "--format", "json"]
 
     grafana:
         container_name: grafana
