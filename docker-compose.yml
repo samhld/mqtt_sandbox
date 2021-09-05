@@ -24,11 +24,6 @@ services:
         ports:
             - "1883:1883"
             - "8080:8080"
-        # healthcheck:
-        #     test: ["CMD", "curl", "-f", "http://localhost:1883", "||", "exit", "52"]
-        #     interval: 5s
-        #     timeout: 5s
-        #     retries: 5
     
     influxd:
         image: influxdb:2.0.7
@@ -91,22 +86,22 @@ services:
     #         - INFLUX_ORG=${INFLUX_ORG}
     #         - FLUX_QUERIES_PATH=/mqtt_api/flux_queries
 
-    py_publisher:
-        build:
-            context: ./client
-            dockerfile: Dockerfile
-        # image: python-test
-        stdin_open: true
-        tty: true
-        deploy:
-            mode: replicated
-            replicas: 10
-            # restart_policy:
-            #     condition: on-failure
-            #     delay: 2s
-        depends_on: 
-            - broker
-        command: ["/mqtt_client.py", "--interval", ".1", "--format", "json"]
+    # py_publisher:
+    #     build:
+    #         context: ./client
+    #         dockerfile: Dockerfile
+    #     # image: python-test
+    #     stdin_open: true
+    #     tty: true
+    #     deploy:
+    #         mode: replicated
+    #         replicas: 10
+    #         # restart_policy:
+    #         #     condition: on-failure
+    #         #     delay: 2s
+    #     depends_on: 
+    #         - broker
+    #     command: ["/mqtt_client.py", "--interval", ".1", "--format", "json-value"]
 
     grafana:
         container_name: grafana
