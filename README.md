@@ -33,7 +33,8 @@ There is no data yet so you will have to spin up data-generating clients:
   - `-i`: Interval (in seconds) = 5 # seconds between publishing a value
   - `-n`: Number = 5 --> number of clients to spin up
   - `-f`: Format = value --> the format to write data in (can be `value`, `json-value`, `json`, `lp`)
-  Formats:
+
+Formats:
   * `value` = a single value with no context.  This will write to a topic that holds context for the value.
   * `json-value` = a single value written as a JSON object.  Again, context will be in topic.
   * `json` = a JSON object that holds the value and the context.  The topic will not have context to show how you can place context in either place...or both.
