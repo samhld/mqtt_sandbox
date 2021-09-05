@@ -3,9 +3,9 @@ set -x
 
 docker build ./client -t python-mqtt-client
 
-number = 5
-interval = 1
-format = value
+number=5
+interval=1
+format=value
 
 while getopts ":n:i:f:" opt; do
     case ${opt} in 

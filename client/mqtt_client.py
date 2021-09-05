@@ -2,14 +2,15 @@ import paho.mqtt.client as mqtt
 import time
 import datetime
 import random
-import string
+# import string
 import logging
 import json
 import argparse
+import os
 
 logger = logging.getLogger(__name__)
 
-letters = string.ascii_lowercase
+# letters = string.ascii_lowercase
 
 parser = argparse.ArgumentParser(description="Configure client")
 parser.add_argument("--interval", type=float, default=5, help="Number of seconds between PUBs (float) -- accepts sub-second")
@@ -44,8 +45,9 @@ def on_message(client, userdata, msg):
 broker = broker
 # broker = "localhost"
 port = 1883
-rand_string = ''.join(random.choice(letters) for i in range(3))
-client_name = f"py_mqtt_{rand_string}"
+# rand_string = ''.join(random.choice(letters) for i in range(3))
+
+client_name = f"py_mqtt_{os.uname().nodename}"
 client = mqtt.Client(client_name)
 client.on_connect = on_connect
 client.on_publish = on_publish
@@ -55,11 +57,14 @@ client.on_message = on_message
 client.connect(broker, port, keepalive=10)
 client.loop_start()
 
+steps = range(-5,5)
+temp = random.randint(0,100)
+
 try:
     loop = True
     while loop:
         try:
-            temp = random.randint(0,100)
+            temp += random.choice(steps)
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
             if format == "value":
                 point = temp
