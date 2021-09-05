@@ -14,10 +14,12 @@ letters = string.ascii_lowercase
 parser = argparse.ArgumentParser(description="Configure client")
 parser.add_argument("--interval", type=float, default=5, help="Number of seconds between PUBs (float) -- accepts sub-second")
 parser.add_argument("--format", type=str, default="value", help="Can be any of: 'value', 'json-value', 'json', 'lp'")
+parser.add_argument("--broker", type=str, default="host.docker.internal", help="Address of broker w/out port")
 args = parser.parse_args()
 
 interval = args.interval
 format = args.format
+broker = args.broker
 
 def on_connect(client, userdata, flags, rc):
     print(f"CONNACK received with code: {rc}")
@@ -39,7 +41,7 @@ def on_subscribe(client, userdata, mid, granted_qos):
 def on_message(client, userdata, msg):
     print(f"Incoming message:\n\tTopic: {msg.topic}\n\tPayload: {msg.payload.decode('utf-8')}")
     
-broker = "host.docker.internal"
+broker = broker
 # broker = "localhost"
 port = 1883
 rand_string = ''.join(random.choice(letters) for i in range(3))

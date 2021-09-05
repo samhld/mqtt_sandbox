@@ -27,6 +27,18 @@ Before running, set environment variables for your Docker host machine:
 
 Next, make sure you're in the directory with the `docker-compose.yml` file contained in the repo.  Then run `docker-compose up -d`
 
+There is no data yet so you will have to spin up data-generating clients:
+* In the top level directory of the repo, `chmod 755 run_pub_clients.sh <args>`.
+* Now run `./run_pub_clients.sh` with any arguments you wish to change from default, which are:
+  - `-i`: Interval (in seconds) = 5 # seconds between publishing a value
+  - `-n`: Number = 5 --> number of clients to spin up
+  - `-f`: Format = value --> the format to write data in (can be `value`, `json-value`, `json`, `lp`)
+  Formats:
+  * `value` = a single value with no context.  This will write to a topic that holds context for the value.
+  * `json-value` = a single value written as a JSON object.  Again, context will be in topic.
+  * `json` = a JSON object that holds the value and the context.  The topic will not have context to show how you can place context in either place...or both.
+  * `lp` = a single value written in Influx Line Protocol.  Context will be in topic.
+
 From there you can take your browser to the following ports on `localhost`:
 - :8086
     - This is the InfluxDB UI
