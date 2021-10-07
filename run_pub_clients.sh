@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 docker build ./client -t python-mqtt-client
 

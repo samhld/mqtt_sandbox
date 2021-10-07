@@ -2,11 +2,11 @@ import paho.mqtt.client as mqtt
 import time
 import datetime
 import random
-# import string
 import logging
 import json
 import argparse
 import os
+import sys
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +26,7 @@ def on_connect(client, userdata, flags, rc):
     print(f"CONNACK received with code: {rc}")
     print("SUBSCRIBING to Topic: 'things/temp/average'")
     client.subscribe("things/temp/average", qos=1)
+    client.subscribe(f"processed/{client_name}/average")
 
 def on_disconnect(client, userdata, rc):
     print(f"DISCONNECT code: {rc}")
@@ -57,7 +58,7 @@ client.on_message = on_message
 client.connect(broker, port, keepalive=10)
 client.loop_start()
 
-steps = range(-5,5)
+steps = list(range(-5,5))
 temp = random.randint(0,100)
 
 try:
@@ -65,16 +66,20 @@ try:
     while loop:
         try:
             temp += random.choice(steps)
+            if temp < 0:
+                temp += 5
             timestamp = round(datetime.datetime.now().timestamp()*(10**9))
             if format == "value":
                 point = temp
                 topic = f"things/{client_name}/temp"
                 print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                sys.stdout.flush()
                 (rc, mid) = client.publish(topic, point, 2, retain=True)
             if format == "json-value":
                 point = json.dumps({"value": temp})
-                topic = f"json/things/{client_name}/temp"
+                topic = f"json-value/things/{client_name}/temp"
                 print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                sys.stdout.flush()
                 (rc, mid) = client.publish(topic, point, 2, retain=True)
             if format == "json":
                 di = {"device_id": client_name,
@@ -83,11 +88,13 @@ try:
                 point = json.dumps(di)
                 topic = "json/data"
                 print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                sys.stdout.flush()
                 (rc, mid) = client.publish(topic, point, 2, retain=True)
             if format == "lp":
                 point = f"temp value={temp}"
                 topic = f"lp/things/{client_name}/temp"
                 print(f"Publishing to topic: {topic}\n\tPayload: {point}")
+                sys.stdout.flush()
                 (rc, mid) = client.publish(topic, point, 2, retain=True)
             time.sleep(interval)
         except:
