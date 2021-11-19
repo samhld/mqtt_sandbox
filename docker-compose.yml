@@ -26,7 +26,8 @@ services:
             - "8080:8080"
     
     influxd:
-        image: influxdb:2.0.7
+        image: influxdb-latest-master
+        # build: ./influxdb
         container_name: influxd
         volumes:
             - "${MQTT_DEMO_PATH}/influxdb/data:/var/lib/.influxdbv2"

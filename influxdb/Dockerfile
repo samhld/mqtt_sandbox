@@ -7,24 +7,21 @@ RUN apt-get update && \
     apt-get install pkg-config -y && \
     apt-get install curl -y && \
     apt-get install git -y && \
+    apt-get install protobuf-compiler -y && \
     go get github.com/influxdata/pkg-config
 
+# RUN apt update && \
+#     apt install make clang pkg-config protobuf-compiler libprotobuf-dev -y
+
 # Clone repo 
-RUN git clone https://github.com/influxdata/flux.git
+RUN git clone https://github.com/influxdata/influxdb.git
 
 RUN curl https://sh.rustup.rs -sSf | bash -s -- --default-toolchain "1.53" -y
 
-WORKDIR ./flux
+WORKDIR ./influxdb
 
 ENV PATH=/root/.cargo/bin:${PATH}
 
-# Temporarily required to build Flux
-RUN mkdir /root/.cache/snowflake && \
-    curl -v http://ocsp.snowflakecomputing.com/ocsp_response_cache.json >> /root/.cache/snowflake/ocsp_response_cache.json
+RUN make
 
-# Build Flux
-RUN go build ./cmd/flux
-
-ADD query.flux .
-
-ENTRYPOINT ["./flux", "repl"]
+ENTRYPOINT ["bin/linux/influxd"]

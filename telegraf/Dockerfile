@@ -5,7 +5,7 @@ FROM golang:1.16-buster
 WORKDIR /go/src
 
 RUN apt-get update && \
-    git clone https://github.com/zan-xhipe/telegraf.git
+    git clone https://github.com/influxdata/telegraf.git
 
 WORKDIR /go/src/telegraf
     
