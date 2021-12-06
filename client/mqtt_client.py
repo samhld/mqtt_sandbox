@@ -16,6 +16,9 @@ parser = argparse.ArgumentParser(description="Configure client")
 parser.add_argument("--interval", type=float, default=5, help="Number of seconds between PUBs (float) -- accepts sub-second")
 parser.add_argument("--format", type=str, default="value", help="Can be any of: 'value', 'json-value', 'json', 'lp'")
 parser.add_argument("--broker", type=str, default="host.docker.internal", help="Address of broker w/out port")
+parser.add_argument("--port", type=int, default=1883)
+parser.add_argument("--user", type=str, default="telegraf")
+parser.add_argument("--pwd", type=str, default=None)
 args = parser.parse_args()
 
 interval = args.interval
@@ -50,6 +53,10 @@ port = 1883
 
 client_name = f"py_mqtt_{os.uname().nodename}"
 client = mqtt.Client(client_name)
+if port == 8883:
+    user = args.user
+    pwd = args.pwd
+    client.username_pw_set(user, pwd)
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_disconnect = on_disconnect
